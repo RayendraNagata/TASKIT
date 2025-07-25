@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { Header } from "@/components/layout/header"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -65,8 +64,6 @@ export default function UserSettingsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
-      
       <div className="container py-6">
         {/* Header */}
         <div className="mb-6">

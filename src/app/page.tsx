@@ -1,12 +1,10 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Header } from "@/components/layout/header"
 import { ArrowRight, Users, Kanban, FileText } from "lucide-react"
 
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-background">
-      <Header />
       
       {/* Hero Section */}
       <section className="relative">

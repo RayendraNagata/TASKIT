@@ -1,12 +1,10 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Header } from "@/components/layout/header"
 import { LoginForm } from "@/components/auth/login-form"
 
 export default function LoginPage() {
   return (
     <div className="min-h-screen bg-background">
-      <Header />
       
       <div className="container flex h-screen w-screen flex-col items-center justify-center">
         <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[400px]">

@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Header } from "@/components/layout/header"
 import { useAuth } from "@/components/providers/auth-provider"
 import { 
   Shield, 
@@ -30,7 +29,6 @@ export default function AdminPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
-        <Header />
         <div className="container py-8">
           <div className="animate-pulse space-y-4">
             <div className="h-8 bg-muted rounded w-1/3"></div>
@@ -47,8 +45,6 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
-      
       <div className="container py-8">
         <div className="flex items-center justify-between">
           <div>
