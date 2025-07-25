@@ -1,10 +1,10 @@
-# SquadScreen
+# TASKIT
 
 A modern collaborative project management platform built with Next.js 15, TypeScript, and Tailwind CSS.
 
 ## Overview
 
-SquadScreen is a comprehensive project management solution designed for teams to collaborate effectively. It provides intuitive dashboard interfaces, interactive kanban boards, and seamless project tracking capabilities.
+TASKIT is a comprehensive project management solution designed for teams to collaborate effectively. It provides intuitive dashboard interfaces, interactive kanban boards, and seamless project tracking capabilities.
 
 ## Features
 
@@ -54,7 +54,7 @@ SquadScreen is a comprehensive project management solution designed for teams to
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/RayendraNagata/SquadScreen.git
+git clone https://github.com/RayendraNagata/TASKIT.git
 cd SquadScreen
 ```
 
