@@ -1,103 +1,129 @@
-import Image from "next/image";
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Header } from "@/components/layout/header"
+import { ArrowRight, Users, Kanban, FileText } from "lucide-react"
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen bg-background">
+      <Header />
+      
+      {/* Hero Section */}
+      <section className="relative">
+        <div className="container py-20 md:py-32">
+          <div className="mx-auto max-w-4xl text-center">
+            <h1 className="text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
+              Professional Project
+              <span className="block text-primary">Collaboration</span>
+            </h1>
+            <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl">
+              Manage tasks, discussions, and resources in one place. 
+              Built for teams that demand professionalism and efficiency.
+            </p>
+            <div className="mt-10 flex items-center justify-center gap-4">
+              <Button size="lg" asChild>
+                <Link href="/register">
+                  Start Your First Project
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+              <Button variant="outline" size="lg" asChild>
+                <Link href="/login">Sign In</Link>
+              </Button>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+
+        {/* Background gradient */}
+        <div className="absolute inset-0 -z-10 overflow-hidden">
+          <div className="absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/5 blur-3xl" />
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="border-t py-20">
+        <div className="container">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+              Everything you need for team collaboration
+            </h2>
+            <p className="mt-4 text-lg text-muted-foreground">
+              Professional tools designed for teams that build great things together.
+            </p>
+          </div>
+
+          <div className="mx-auto mt-16 grid max-w-5xl grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+            <div className="rounded-lg border bg-card p-6 text-center transition-colors hover:bg-accent/50">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                <Users className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="mt-4 text-lg font-semibold">Team Management</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Create projects, invite team members, and manage roles with custom permissions.
+              </p>
+            </div>
+
+            <div className="rounded-lg border bg-card p-6 text-center transition-colors hover:bg-accent/50">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                <Kanban className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="mt-4 text-lg font-semibold">Kanban Boards</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Organize tasks with drag-and-drop Kanban boards. Track progress efficiently.
+              </p>
+            </div>
+
+            <div className="rounded-lg border bg-card p-6 text-center transition-colors hover:bg-accent/50">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                <FileText className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="mt-4 text-lg font-semibold">Resource Hub</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Store files, links, and important references. Keep everything organized.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="border-t py-20">
+        <div className="container">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+              Ready to transform your workflow?
+            </h2>
+            <p className="mt-4 text-lg text-muted-foreground">
+              Join teams worldwide who trust Study Squad for their project collaboration.
+            </p>
+            <div className="mt-8">
+              <Button size="lg" asChild>
+                <Link href="/register">
+                  Get Started Today
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t py-12">
+        <div className="container">
+          <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
+            <div className="flex items-center space-x-2">
+              <div className="flex h-6 w-6 items-center justify-center rounded bg-primary text-primary-foreground">
+                <span className="text-xs font-bold">SS</span>
+              </div>
+              <span className="font-semibold">Study Squad</span>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              © 2025 Study Squad. Professional project collaboration platform.
+            </p>
+          </div>
+        </div>
       </footer>
     </div>
-  );
+  )
 }
