@@ -36,7 +36,7 @@ export default function RegisterPage() {
       await new Promise(resolve => setTimeout(resolve, 1000))
       
       // Check if email already exists (mock check)
-      if (data.email === "admin@studysquad.com" || data.email === "john@company.com") {
+      if (data.email === "admin@taskit.com" || data.email === "john@company.com") {
         setError("email", {
           type: "manual",
           message: "An account with this email already exists"
@@ -70,14 +70,15 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 sm:p-6 lg:p-8">
       <div className="w-full max-w-md space-y-6">
         {/* Back to Home */}
         <div className="flex items-center">
           <Button variant="ghost" size="sm" asChild>
             <Link href="/">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Home
+              <span className="hidden sm:inline">Back to Home</span>
+              <span className="sm:hidden">Back</span>
             </Link>
           </Button>
         </div>
@@ -86,20 +87,20 @@ export default function RegisterPage() {
         <div className="text-center space-y-2">
           <div className="flex items-center justify-center space-x-2 mb-4">
             <div className="flex h-8 w-8 items-center justify-center rounded bg-primary text-primary-foreground">
-              <span className="text-sm font-bold">SS</span>
+              <span className="text-sm font-bold">TK</span>
             </div>
-            <span className="text-xl font-semibold">Study Squad</span>
+            <span className="text-xl font-semibold">TASKIT</span>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight">Create your account</h1>
-          <p className="text-muted-foreground">
-            Join thousands of teams collaborating with Study Squad
+          <h1 className="text-2xl font-bold tracking-tight">Create Your Account</h1>
+          <p className="text-muted-foreground text-sm sm:text-base">
+            Join thousands of teams collaborating with TASKIT
           </p>
         </div>
 
         {/* Registration Form */}
         <Card>
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-xl">Sign up</CardTitle>
+          <CardHeader className="space-y-1 pb-4">
+            <CardTitle className="text-xl">Sign Up</CardTitle>
             <CardDescription>
               Enter your details to create your account
             </CardDescription>
@@ -115,6 +116,7 @@ export default function RegisterPage() {
                   id="name"
                   placeholder="John Doe"
                   disabled={isLoading}
+                  className="w-full"
                 />
                 {errors.name && (
                   <p className="text-sm text-destructive">{errors.name.message}</p>
@@ -131,6 +133,7 @@ export default function RegisterPage() {
                   type="email"
                   placeholder="john@company.com"
                   disabled={isLoading}
+                  className="w-full"
                 />
                 {errors.email && (
                   <p className="text-sm text-destructive">{errors.email.message}</p>
@@ -148,6 +151,7 @@ export default function RegisterPage() {
                     type={showPassword ? "text" : "password"}
                     placeholder="Create a strong password"
                     disabled={isLoading}
+                    className="w-full pr-10"
                   />
                   <Button
                     type="button"
@@ -180,6 +184,7 @@ export default function RegisterPage() {
                     type={showConfirmPassword ? "text" : "password"}
                     placeholder="Confirm your password"
                     disabled={isLoading}
+                    className="w-full pr-10"
                   />
                   <Button
                     type="button"
@@ -210,6 +215,7 @@ export default function RegisterPage() {
                 <Link href="/privacy" className="text-primary hover:underline">
                   Privacy Policy
                 </Link>
+                .
               </div>
               
               <Button type="submit" className="w-full" disabled={isLoading}>
@@ -224,7 +230,7 @@ export default function RegisterPage() {
         <div className="text-center text-sm">
           Already have an account?{" "}
           <Link href="/login" className="text-primary hover:underline font-medium">
-            Sign in
+            Sign In
           </Link>
         </div>
 
@@ -232,7 +238,7 @@ export default function RegisterPage() {
         <div className="text-center">
           <Card className="bg-muted/50">
             <CardContent className="p-4">
-              <p className="text-sm text-muted-foreground">
+              <p className="text-xs sm:text-sm text-muted-foreground">
                 <strong>Demo Mode:</strong> Registration is simulated. You can also use our{" "}
                 <Link href="/login" className="text-primary hover:underline">
                   demo accounts

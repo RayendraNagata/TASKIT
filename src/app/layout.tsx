@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Study Squad - Professional Project Collaboration",
+  title: "TASKIT - Professional Project Collaboration",
   description: "Manage tasks, discussions, and resources in one place with your team",
 }
 
@@ -33,13 +33,15 @@ export default function RootLayout({
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="dark"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
           <AuthProvider>
             <Header />
-            {children}
+            <main className="min-h-screen">
+              {children}
+            </main>
             <Toaster />
           </AuthProvider>
         </ThemeProvider>

@@ -53,7 +53,7 @@ export default function AdminPage() {
               Admin Panel
             </h1>
             <p className="text-muted-foreground">
-              System administration and user management for Study Squad
+              System administration and user management for TASKIT
             </p>
             <p className="text-sm text-primary font-medium mt-1">
               Administrator: {user.name}

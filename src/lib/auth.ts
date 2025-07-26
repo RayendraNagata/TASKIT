@@ -14,7 +14,7 @@ const mockUsers: AuthUser[] = [
   {
     id: "admin-1",
     name: "Admin User",
-    email: "admin@studysquad.com",
+    email: "admin@taskit.com",
     role: "admin",
     createdAt: new Date("2024-01-01")
   },
@@ -93,7 +93,7 @@ export async function signOut(): Promise<void> {
 // Demo accounts for testing
 export const DEMO_ACCOUNTS = {
   admin: {
-    email: "admin@studysquad.com",
+    email: "admin@taskit.com",
     password: "admin123",
     name: "Admin User",
     role: "admin" as const

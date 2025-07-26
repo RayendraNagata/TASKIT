@@ -20,12 +20,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { TaskModal } from "./task-modal"
 import {
   DndContext,
   DragEndEvent,
   DragOverlay,
   DragStartEvent,
   PointerSensor,
+  KeyboardSensor,
+  TouchSensor,
+  MouseSensor,
   useSensor,
   useSensors,
   closestCorners,
@@ -60,7 +64,13 @@ interface KanbanBoardProps {
 }
 
 // Sortable Task Card Component
-function SortableTaskCard({ task }: { task: Task }) {
+function SortableTaskCard({ 
+  task, 
+  onEdit 
+}: { 
+  task: Task
+  onEdit?: (task: Task) => void
+}) {
   const {
     attributes,
     listeners,
@@ -112,7 +122,9 @@ function SortableTaskCard({ task }: { task: Task }) {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem>Edit Task</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onEdit?.(task)}>
+                  Edit Task
+                </DropdownMenuItem>
                 <DropdownMenuItem>Change Status</DropdownMenuItem>
                 <DropdownMenuItem>Assign Member</DropdownMenuItem>
                 <DropdownMenuItem className="text-destructive">
@@ -181,13 +193,17 @@ function DroppableColumn({
   title, 
   status, 
   tasks, 
-  icon 
+  icon,
+  onAddTask,
+  onEditTask
 }: { 
   id: string
   title: string
   status: Task["status"]
   tasks: Task[]
   icon: React.ReactNode
+  onAddTask?: (status: Task["status"]) => void
+  onEditTask?: (task: Task) => void
 }) {
   const { setNodeRef, isOver } = useDroppable({
     id: id
@@ -205,7 +221,11 @@ function DroppableColumn({
             {tasks.length}
           </Badge>
         </div>
-        <Button variant="ghost" size="sm">
+        <Button 
+          variant="ghost" 
+          size="sm"
+          onClick={() => onAddTask?.(status)}
+        >
           <Plus className="h-4 w-4" />
         </Button>
       </div>
@@ -221,7 +241,7 @@ function DroppableColumn({
           strategy={verticalListSortingStrategy}
         >
           {tasks.map((task) => (
-            <SortableTaskCard key={task.id} task={task} />
+            <SortableTaskCard key={task.id} task={task} onEdit={onEditTask} />
           ))}
 
           {/* Empty state */}
@@ -234,7 +254,12 @@ function DroppableColumn({
                   {isOver ? "Drop task here" : `No tasks in ${title.toLowerCase()}`}
                 </div>
                 {!isOver && (
-                  <Button variant="ghost" size="sm" className="mt-2">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="mt-2"
+                    onClick={() => onAddTask?.(status)}
+                  >
                     <Plus className="mr-2 h-3 w-3" />
                     Add Task
                   </Button>
@@ -250,6 +275,15 @@ function DroppableColumn({
 
 export function KanbanBoard({ projectId }: KanbanBoardProps) {
   const [isMounted, setIsMounted] = useState(false)
+  const [taskModal, setTaskModal] = useState<{
+    isOpen: boolean
+    mode: "create" | "edit"
+    task?: Task
+    status?: Task["status"]
+  }>({
+    isOpen: false,
+    mode: "create"
+  })
   const [tasks, setTasks] = useState<Task[]>([
     {
       id: "1",
@@ -324,11 +358,18 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
   }, [])
 
   const sensors = useSensors(
-    useSensor(PointerSensor, {
+    useSensor(MouseSensor, {
       activationConstraint: {
-        distance: 8,
+        distance: 10,
       },
-    })
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 250,
+        tolerance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor)
   )
 
   const columns = [
@@ -403,6 +444,49 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
     }
   }
 
+  const handleCreateTask = (status: Task["status"]) => {
+    setTaskModal({
+      isOpen: true,
+      mode: "create",
+      status
+    })
+  }
+
+  const handleEditTask = (task: Task) => {
+    setTaskModal({
+      isOpen: true,
+      mode: "edit",
+      task
+    })
+  }
+
+  const handleSaveTask = (taskData: Partial<Task>) => {
+    if (taskModal.mode === "create") {
+      const newTask: Task = {
+        id: taskData.id!,
+        title: taskData.title!,
+        description: taskData.description,
+        status: taskModal.status || taskData.status!,
+        assignee: taskData.assignee,
+        dueDate: taskData.dueDate,
+        priority: taskData.priority
+      }
+      setTasks([...tasks, newTask])
+    } else {
+      setTasks(tasks.map(task => 
+        task.id === taskData.id ? { ...task, ...taskData } : task
+      ))
+    }
+  }
+
+  const handleDeleteTask = (taskId: string) => {
+    setTasks(tasks.filter(task => task.id !== taskId))
+  }
+
+  const closeTaskModal = () => {
+    setTaskModal({ isOpen: false, mode: "create" })
+  }
+
   // Prevent hydration mismatch - render only after client mount
   if (!isMounted) {
     return (
@@ -456,6 +540,8 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
                 status={column.status}
                 tasks={columnTasks}
                 icon={getStatusIcon(column.status)}
+                onAddTask={handleCreateTask}
+                onEditTask={handleEditTask}
               />
             )
           })}
@@ -466,10 +552,20 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
             <div className="rotate-3 opacity-90">
               <SortableTaskCard 
                 task={tasks.find(task => task.id === activeId)!} 
+                onEdit={handleEditTask}
               />
             </div>
           ) : null}
         </DragOverlay>
+
+        <TaskModal
+          task={taskModal.task}
+          isOpen={taskModal.isOpen}
+          onClose={closeTaskModal}
+          onSave={handleSaveTask}
+          onDelete={handleDeleteTask}
+          mode={taskModal.mode}
+        />
       </div>
     </DndContext>
   )

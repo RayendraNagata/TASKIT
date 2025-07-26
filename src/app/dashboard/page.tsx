@@ -132,22 +132,23 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto py-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 max-w-7xl">
         {/* Header Section */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">
-              Selamat datang, {user?.name || "User"}!
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+              Welcome back, {user?.name || "User"}!
             </h1>
             <p className="text-muted-foreground mt-2">
-              Kelola proyek dan kolaborasi tim Anda di satu tempat
+              Manage your projects and team collaboration in one place
             </p>
           </div>
-          <div className="flex items-center gap-4">
-            <Button variant="outline" asChild>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+            <Button variant="outline" asChild className="w-full sm:w-auto">
               <a href="/settings">
                 <Settings className="mr-2 h-4 w-4" />
-                Pengaturan Akun
+                <span className="hidden sm:inline">Account Settings</span>
+                <span className="sm:hidden">Settings</span>
               </a>
             </Button>
             <CreateProjectModal onProjectCreated={handleProjectCreated} />
@@ -155,57 +156,63 @@ export default function Dashboard() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
+        <div className="grid gap-4 grid-cols-2 lg:grid-cols-4 mb-6 sm:mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Proyek</CardTitle>
+              <CardTitle className="text-sm font-medium">Total Projects</CardTitle>
               <FolderOpen className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{totalProjects}</div>
+              <div className="text-xl sm:text-2xl font-bold">{totalProjects}</div>
               <p className="text-xs text-muted-foreground">
-                {activeProjects} aktif, {totalProjects - activeProjects} selesai
+                <span className="hidden sm:inline">{activeProjects} active, {totalProjects - activeProjects} completed</span>
+                <span className="sm:hidden">{activeProjects} active</span>
               </p>
             </CardContent>
           </Card>
           
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Tugas</CardTitle>
+              <CardTitle className="text-sm font-medium">Total Tasks</CardTitle>
               <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{totalTasks}</div>
+              <div className="text-xl sm:text-2xl font-bold">{totalTasks}</div>
               <p className="text-xs text-muted-foreground">
-                {completedTasks} diselesaikan
+                {completedTasks} completed
               </p>
             </CardContent>
           </Card>
           
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Anggota Tim</CardTitle>
+              <CardTitle className="text-sm font-medium">Team Members</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{totalMembers}</div>
+              <div className="text-xl sm:text-2xl font-bold">{totalMembers}</div>
               <p className="text-xs text-muted-foreground">
-                Di semua proyek
+                <span className="hidden sm:inline">Across all projects</span>
+                <span className="sm:hidden">Total</span>
               </p>
             </CardContent>
           </Card>
           
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Tingkat Penyelesaian</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                <span className="hidden sm:inline">Completion Rate</span>
+                <span className="sm:hidden">Progress</span>
+              </CardTitle>
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
+              <div className="text-xl sm:text-2xl font-bold">
                 {totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0}%
               </div>
               <p className="text-xs text-muted-foreground">
-                Progress keseluruhan
+                <span className="hidden sm:inline">Overall progress</span>
+                <span className="sm:hidden">Overall</span>
               </p>
             </CardContent>
           </Card>
@@ -215,27 +222,27 @@ export default function Dashboard() {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold tracking-tight">Proyek Saya</h2>
+              <h2 className="text-2xl font-bold tracking-tight">My Projects</h2>
               <p className="text-muted-foreground">
-                Kelola dan pantau proyek aktif Anda
+                Manage and monitor your active projects
               </p>
             </div>
           </div>
 
           {/* Projects Grid */}
           {projects.length > 0 ? (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
               {projects.map((project) => (
                 <Card key={project.id} className="hover:shadow-lg transition-shadow">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
-                      <div className="space-y-1">
-                        <CardTitle className="line-clamp-1">{project.name}</CardTitle>
-                        <CardDescription className="line-clamp-2">
+                      <div className="space-y-1 flex-1 min-w-0">
+                        <CardTitle className="line-clamp-1 text-base sm:text-lg">{project.name}</CardTitle>
+                        <CardDescription className="line-clamp-2 text-sm">
                           {project.description}
                         </CardDescription>
                       </div>
-                      <Button variant="ghost" size="sm">
+                      <Button variant="ghost" size="sm" className="ml-2 flex-shrink-0">
                         <MoreHorizontal className="h-4 w-4" />
                       </Button>
                     </div>
@@ -257,28 +264,28 @@ export default function Dashboard() {
                   
                   <CardContent className="pt-0">
                     {/* Project Stats */}
-                    <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-4">
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <CheckCircle2 className="h-4 w-4" />
-                        <span>{project.completedTasks}/{project.taskCount} tugas</span>
+                        <CheckCircle2 className="h-4 w-4 flex-shrink-0" />
+                        <span className="truncate">{project.completedTasks}/{project.taskCount} tasks</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <MessageSquare className="h-4 w-4" />
-                        <span>{project.totalDiscussions} diskusi</span>
+                        <MessageSquare className="h-4 w-4 flex-shrink-0" />
+                        <span className="truncate">{project.totalDiscussions} discussions</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <FileText className="h-4 w-4" />
-                        <span>{project.totalFiles} file</span>
+                        <FileText className="h-4 w-4 flex-shrink-0" />
+                        <span className="truncate">{project.totalFiles} files</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Link2 className="h-4 w-4" />
-                        <span>{project.totalLinks} link</span>
+                        <Link2 className="h-4 w-4 flex-shrink-0" />
+                        <span className="truncate">{project.totalLinks} links</span>
                       </div>
                     </div>
 
                     {/* Members */}
                     <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 min-w-0">
                         <div className="flex -space-x-2">
                           {project.members.slice(0, 3).map((member, index) => (
                             <Avatar key={member.id} className="h-6 w-6 border-2 border-background">
@@ -294,26 +301,26 @@ export default function Dashboard() {
                             </div>
                           )}
                         </div>
-                        <span className="text-sm text-muted-foreground">
-                          {project.memberCount} anggota
+                        <span className="text-sm text-muted-foreground truncate">
+                          {project.memberCount} members
                         </span>
                       </div>
                       {project.isOwner && (
-                        <Badge variant="secondary" className="text-xs">
+                        <Badge variant="secondary" className="text-xs flex-shrink-0">
                           Owner
                         </Badge>
                       )}
                     </div>
 
                     {/* Footer */}
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                       <div className="flex items-center gap-1 text-xs text-muted-foreground">
                         <Clock className="h-3 w-3" />
                         <span>{project.lastActivity}</span>
                       </div>
-                      <Button size="sm" asChild>
+                      <Button size="sm" asChild className="w-full sm:w-auto">
                         <a href={`/projects/${project.id}`}>
-                          Buka Proyek
+                          Open Project
                         </a>
                       </Button>
                     </div>
@@ -325,9 +332,9 @@ export default function Dashboard() {
             <Card className="py-12">
               <CardContent className="text-center">
                 <FolderOpen className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                <CardTitle className="mb-2">Belum ada proyek</CardTitle>
+                <CardTitle className="mb-2">No projects yet</CardTitle>
                 <CardDescription className="mb-4">
-                  Mulai kolaborasi dengan membuat proyek pertama Anda
+                  Start collaborating by creating your first project
                 </CardDescription>
                 <CreateProjectModal onProjectCreated={handleProjectCreated} />
               </CardContent>

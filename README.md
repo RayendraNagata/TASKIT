@@ -1,61 +1,85 @@
 # TASKIT
 
-A modern collaborative project management platform built with Next.js 15, TypeScript, and Tailwind CSS.
-
-## Overview
-
-TASKIT is a comprehensive project management solution designed for teams to collaborate effectively. It provides intuitive dashboard interfaces, interactive kanban boards, and seamless project tracking capabilities.
+A comprehensive collaborative project management platform designed for teams to work together efficiently. TASKIT provides powerful tools for task management, team collaboration, and resource sharing in a modern, responsive interface.
 
 ## Features
 
 ### Core Functionality
-- **Dashboard Management**: Comprehensive project overview with real-time statistics
-- **Interactive Kanban Board**: Drag-and-drop task management with visual feedback
-- **Project Creation**: Streamlined project setup with team collaboration features
-- **Task Tracking**: Complete task lifecycle management with priority levels
-- **Team Collaboration**: Multi-user workspace with role-based access control
+- **User Authentication**: Secure login and registration system with role-based access control
+- **Project Management**: Create and manage projects with detailed descriptions and team assignments
+- **Task Management**: Interactive Kanban board with drag-and-drop functionality for task organization
+- **Team Collaboration**: Real-time discussion panels and team member management
+- **Resource Management**: File uploads and link sharing for project resources
+- **Responsive Design**: Mobile-first approach ensuring optimal experience across all devices
+
+### User Roles
+- **Admin**: Full system access with user and project management capabilities
+- **Project Owner**: Can create projects, manage team members, and configure project settings
+- **Team Member**: Can participate in projects, manage assigned tasks, and contribute to discussions
 
 ### Technical Features
-- **Responsive Design**: Mobile-first approach with Tailwind CSS
-- **Type Safety**: Full TypeScript implementation
-- **Modern UI Components**: Shadcn/ui component library
-- **Drag & Drop**: Professional @dnd-kit integration
-- **Real-time Updates**: Dynamic progress calculation and statistics
-- **Authentication**: Secure user management system
+- **Modern UI/UX**: Clean, professional interface built with Tailwind CSS and Radix UI components
+- **Drag & Drop**: Advanced task management with multi-input support (mouse, touch, keyboard)
+- **Real-time Updates**: Live collaboration features for seamless team coordination
+- **Dark/Light Theme**: User preference-based theme switching
+- **Notification System**: Keep track of important updates and team activities
 
 ## Technology Stack
 
 ### Frontend
-- **Next.js 15.4.3**: React framework with App Router
-- **TypeScript**: Static type checking
-- **Tailwind CSS**: Utility-first CSS framework
-- **Shadcn/ui**: Modern component library
-- **@dnd-kit**: Drag and drop functionality
-- **Lucide React**: Icon library
-
-### Backend & Database
-- **Convex**: Real-time backend platform
-- **Authentication**: Secure user authentication
-- **Real-time Data**: Live updates and synchronization
+- **Next.js 15.4.3**: React framework with App Router and Server Components
+- **TypeScript**: Type-safe development with strict type checking
+- **Tailwind CSS**: Utility-first CSS framework for responsive design
+- **Radix UI**: Accessible component primitives for consistent user interface
+- **Lucide React**: Beautiful, customizable icons
 
 ### Development Tools
-- **ESLint**: Code linting and formatting
-- **PostCSS**: CSS processing
-- **Turbopack**: Fast development builds
+- **ESLint**: Code linting with modern JavaScript standards
+- **PostCSS**: CSS post-processing for enhanced styling capabilities
+- **Turbopack**: Fast development server for improved developer experience
+
+### Key Dependencies
+- **@dnd-kit/core**: Advanced drag-and-drop functionality with accessibility support
+- **@hookform/resolvers**: Form validation with Zod integration
+- **next-themes**: Theme management with system preference detection
+
+## Project Structure
+
+```
+taskit/
+├── src/
+│   ├── app/                    # Next.js App Router pages
+│   │   ├── (auth)/            # Authentication pages (login, register, forgot-password)
+│   │   ├── dashboard/         # User dashboard
+│   │   ├── projects/          # Project management pages
+│   │   ├── admin/             # Administrative interface
+│   │   ├── settings/          # User settings
+│   │   └── layout.tsx         # Root layout component
+│   ├── components/            # Reusable React components
+│   │   ├── ui/               # Base UI components (buttons, inputs, dialogs)
+│   │   ├── layout/           # Layout components (header, theme toggle)
+│   │   ├── auth/             # Authentication components
+│   │   ├── projects/         # Project-specific components
+│   │   ├── notifications/    # Notification system
+│   │   └── providers/        # Context providers
+│   └── lib/                  # Utility functions and configurations
+├── public/                   # Static assets
+├── convex/                  # Backend API and database schema
+└── config files             # TypeScript, ESLint, Tailwind configurations
+```
 
 ## Getting Started
 
 ### Prerequisites
 - Node.js 18+ 
 - npm or yarn package manager
-- Git
 
 ### Installation
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/RayendraNagata/TASKIT.git
-cd SquadScreen
+git clone <repository-url>
+cd taskit
 ```
 
 2. Install dependencies:
@@ -63,153 +87,95 @@ cd SquadScreen
 npm install
 ```
 
-3. Set up environment variables:
-```bash
-cp .env.example .env.local
-```
-
-4. Configure your environment variables in `.env.local`:
-```env
-CONVEX_DEPLOYMENT=your_convex_deployment
-NEXT_PUBLIC_CONVEX_URL=your_convex_url
-```
-
-5. Start the development server:
+3. Start the development server:
 ```bash
 npm run dev
 ```
 
-6. Open [http://localhost:3000](http://localhost:3000) in your browser.
+4. Open your browser and navigate to `http://localhost:3000`
 
-## Project Structure
+### Demo Accounts
 
-```
-src/
-├── app/                    # Next.js App Router pages
-│   ├── (auth)/            # Authentication pages
-│   ├── (dashboard)/       # Dashboard pages
-│   ├── admin/             # Admin interface
-│   ├── projects/          # Project management
-│   └── settings/          # User settings
-├── components/            # Reusable UI components
-│   ├── dashboard/         # Dashboard-specific components
-│   ├── layout/            # Layout components
-│   ├── projects/          # Project management components
-│   ├── providers/         # Context providers
-│   └── ui/                # Base UI components
-└── lib/                   # Utility functions and configurations
-```
+The application includes demo accounts for testing:
+
+- **Admin Account**: admin@taskit.com / password123
+- **Regular User**: john@company.com / password123
+
+## Available Scripts
+
+- `npm run dev`: Start development server with Turbopack
+- `npm run build`: Build production application
+- `npm run start`: Start production server
+- `npm run lint`: Run ESLint code analysis
 
 ## Key Components
 
-### Dashboard
-- Project overview with progress tracking
-- Team activity monitoring
-- Quick access to recent projects
-- Performance analytics
-
-### Kanban Board
-- Drag-and-drop task management
-- Visual task organization
-- Real-time collaboration
-- Progress tracking
+### Authentication System
+- Secure user registration and login
+- Password reset functionality
+- Role-based access control
+- Session management
 
 ### Project Management
 - Project creation and configuration
-- Team member management
-- Resource allocation
-- Timeline tracking
+- Team member invitation and management
+- Project statistics and progress tracking
+- Resource and file management
 
-## Development
+### Task Management
+- Interactive Kanban board
+- Task creation, editing, and deletion
+- Status tracking (To Do, In Progress, Done)
+- Priority and assignee management
+- Drag-and-drop task organization
 
-### Available Scripts
+### User Interface
+- Responsive design for all screen sizes
+- Dark and light theme support
+- Consistent component library
+- Accessible navigation and interactions
 
-```bash
-# Start development server
-npm run dev
+## Development Guidelines
 
-# Build for production
-npm run build
-
-# Start production server
-npm start
-
-# Run linting
-npm run lint
-
-# Type checking
-npm run type-check
-```
-
-### Code Style
-- ESLint configuration for consistent code style
+### Code Standards
 - TypeScript strict mode enabled
-- Tailwind CSS for styling
-- Component-based architecture
+- ESLint configuration for code quality
+- Consistent component structure and naming
+- Responsive design principles
 
-## Deployment
+### Component Architecture
+- Modular component design
+- Separation of concerns
+- Reusable UI components
+- Proper state management
 
-### Vercel (Recommended)
-1. Connect your GitHub repository to Vercel
-2. Configure environment variables
-3. Deploy automatically on push to main branch
+### Responsive Design
+- Mobile-first approach
+- Flexible layouts with CSS Grid and Flexbox
+- Optimized touch interactions
+- Consistent spacing and typography
 
-### Manual Deployment
-1. Build the application:
-```bash
-npm run build
-```
+## Future Enhancements
 
-2. Start the production server:
-```bash
-npm start
-```
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch:
-```bash
-git checkout -b feature/your-feature-name
-```
-
-3. Make your changes and commit:
-```bash
-git commit -m "Add your feature description"
-```
-
-4. Push to your branch:
-```bash
-git push origin feature/your-feature-name
-```
-
-5. Create a Pull Request
-
-### Development Guidelines
-- Follow TypeScript best practices
-- Maintain component modularity
-- Write descriptive commit messages
-- Ensure responsive design compatibility
-- Test functionality across different browsers
+- Real-time collaboration with WebSocket integration
+- Advanced notification system with email support
+- File storage and management improvements
+- Advanced project analytics and reporting
+- Integration with popular development tools
+- Mobile application development
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is developed as a demonstration of modern web application architecture and collaborative project management solutions.
 
-## Support
+## Contributing
 
-For support, questions, or contributions, please open an issue on GitHub or contact the development team.
+This is a demonstration project showcasing modern web development practices and collaborative project management features. The codebase serves as an example of:
 
-## Roadmap
+- Modern React and Next.js development patterns
+- TypeScript implementation in full-stack applications
+- Responsive design and mobile-first development
+- User authentication and role-based access control
+- Interactive UI components and drag-and-drop functionality
 
-### Upcoming Features
-- Real-time notifications
-- Advanced analytics dashboard
-- File sharing and collaboration
-- Mobile application
-- API integrations
-- Advanced reporting tools
-
----
-
-Built with modern web technologies for efficient team collaboration.
+For questions or feedback about the implementation, please refer to the code comments and documentation within the source files.

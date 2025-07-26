@@ -380,7 +380,7 @@ export default function UserSettingsPage() {
                   <div>
                     <p className="font-medium">Download your data</p>
                     <p className="text-sm text-muted-foreground">
-                      Get a copy of all your data in Study Squad
+                      Get a copy of all your data in TASKIT
                     </p>
                   </div>
                   <Button variant="outline" size="sm">

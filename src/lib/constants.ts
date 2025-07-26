@@ -1,8 +1,8 @@
 export const APP_CONFIG = {
-  name: "Study Squad",
+  name: "TASKIT",
   description: "Professional project collaboration platform",
   version: "1.0.0",
-  author: "Study Squad Team",
+  author: "TASKIT Team",
 } as const
 
 export const ROUTES = {

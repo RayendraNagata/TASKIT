@@ -29,13 +29,13 @@ export function Sidebar({ onProjectCreated }: SidebarProps) {
       active: pathname === "/dashboard"
     },
     {
-      title: "Proyek Saya",
+      title: "My Projects",
       href: "/projects",
       icon: FolderOpen,
       active: pathname?.startsWith("/projects")
     },
     {
-      title: "Pengaturan Akun",
+      title: "Account Settings",
       href: "/settings",
       icon: Settings,
       active: pathname === "/settings"
