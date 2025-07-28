@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { KanbanBoard } from "@/components/projects/kanban-board"
 import { DiscussionPanel } from "@/components/projects/discussion-panel"
 import { ResourcesPanel } from "@/components/projects/resources-panel"
@@ -7,6 +8,8 @@ import { MembersPanel } from "@/components/projects/members-panel"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Input } from "@/components/ui/input"
+import { toast } from "sonner"
 import { 
   ArrowLeft, 
   Settings, 
@@ -15,14 +18,76 @@ import {
   FolderOpen, 
   Kanban,
   Calendar,
-  MoreHorizontal
+  MoreHorizontal,
+  UserPlus,
+  Mail,
+  Archive,
+  Trash2
 } from "lucide-react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 export default function ProjectPage() {
   const params = useParams()
   const projectId = params.id as string
+  
+  // State for dialogs
+  const [inviteDialog, setInviteDialog] = useState(false)
+  const [settingsDialog, setSettingsDialog] = useState(false)
+  const [inviteEmail, setInviteEmail] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+
+  // Handler functions
+  const handleInviteMember = async () => {
+    if (!inviteEmail.trim()) {
+      toast.error("Please enter an email address")
+      return
+    }
+
+    setIsLoading(true)
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      toast.success(`Invitation sent to ${inviteEmail}`)
+      setInviteEmail("")
+      setInviteDialog(false)
+    } catch (error) {
+      toast.error("Failed to send invitation")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleProjectSettings = () => {
+    toast.info("Project settings feature coming soon!")
+  }
+
+  const handleArchiveProject = () => {
+    toast.info("Archive project feature coming soon!")
+  }
+
+  const handleDeleteProject = () => {
+    toast.error("Delete project feature coming soon!")
+  }
+
+  const handleDuplicateProject = () => {
+    toast.info("Duplicate project feature coming soon!")
+  }
 
   // Mock project data - will be replaced with real data from Convex
   const project = {
@@ -57,19 +122,51 @@ export default function ProjectPage() {
               </Button>
             </div>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:space-x-2">
-              <Button variant="outline" size="sm" className="w-full sm:w-auto">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="w-full sm:w-auto"
+                onClick={() => setInviteDialog(true)}
+              >
                 <Users className="mr-2 h-4 w-4" />
                 <span className="hidden sm:inline">Invite Members</span>
                 <span className="sm:hidden">Invite</span>
               </Button>
-              <Button variant="outline" size="sm" className="w-full sm:w-auto">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="w-full sm:w-auto"
+                onClick={handleProjectSettings}
+              >
                 <Settings className="mr-2 h-4 w-4" />
                 <span className="hidden sm:inline">Settings</span>
                 <span className="sm:hidden">Settings</span>
               </Button>
-              <Button variant="ghost" size="sm" className="w-full sm:w-auto">
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="w-full sm:w-auto">
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={handleDuplicateProject}>
+                    <Calendar className="mr-2 h-4 w-4" />
+                    Duplicate Project
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleArchiveProject}>
+                    <Archive className="mr-2 h-4 w-4" />
+                    Archive Project
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={handleDeleteProject}
+                    className="text-destructive"
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    Delete Project
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
 
@@ -183,6 +280,45 @@ export default function ProjectPage() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Invite Member Dialog */}
+      <Dialog open={inviteDialog} onOpenChange={setInviteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Invite Team Member</DialogTitle>
+            <DialogDescription>
+              Send an invitation to a new team member to join this project
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <label className="text-sm font-medium">Email Address</label>
+              <Input
+                type="email"
+                placeholder="colleague@company.com"
+                value={inviteEmail}
+                onChange={(e) => setInviteEmail(e.target.value)}
+                className="mt-1"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button 
+              variant="outline" 
+              onClick={() => setInviteDialog(false)}
+              disabled={isLoading}
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleInviteMember}
+              disabled={isLoading || !inviteEmail.trim()}
+            >
+              {isLoading ? "Sending..." : "Send Invitation"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

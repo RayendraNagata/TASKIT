@@ -23,6 +23,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { toast } from "sonner"
 
 interface Member {
   id: string
@@ -106,6 +107,37 @@ export function MembersPanel({ projectId }: MembersPanelProps) {
 
   const [searchQuery, setSearchQuery] = useState("")
 
+  // Handler functions for member actions
+  const handleInviteMember = () => {
+    toast.success("Invite member dialog will open")
+    // TODO: Open invite member dialog
+  }
+
+  const handleManageRoles = () => {
+    toast.success("Role management dialog will open")
+    // TODO: Open role management dialog
+  }
+
+  const handleChangeRole = (memberId: string, memberName: string) => {
+    toast.success(`Change role for ${memberName}`)
+    // TODO: Open change role dialog
+  }
+
+  const handleSendMessage = (memberId: string, memberName: string) => {
+    toast.success(`Opening message dialog for ${memberName}`)
+    // TODO: Open messaging interface
+  }
+
+  const handleViewProfile = (memberId: string, memberName: string) => {
+    toast.success(`Viewing profile for ${memberName}`)
+    // TODO: Navigate to user profile
+  }
+
+  const handleRemoveMember = (memberId: string, memberName: string) => {
+    toast.error(`Remove ${memberName} from project?`)
+    // TODO: Show confirmation dialog and remove member
+  }
+
   const getRoleIcon = (roleType: Member["role"]["type"]) => {
     switch (roleType) {
       case "owner": return <Crown className="h-4 w-4 text-yellow-600" />
@@ -160,11 +192,14 @@ export function MembersPanel({ projectId }: MembersPanelProps) {
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <Button variant="outline">
+          <Button 
+            variant="outline"
+            onClick={handleManageRoles}
+          >
             <Settings className="mr-2 h-4 w-4" />
             Roles
           </Button>
-          <Button>
+          <Button onClick={handleInviteMember}>
             <UserPlus className="mr-2 h-4 w-4" />
             Invite Member
           </Button>
@@ -271,10 +306,19 @@ export function MembersPanel({ projectId }: MembersPanelProps) {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem>Change Role</DropdownMenuItem>
-                        <DropdownMenuItem>Send Message</DropdownMenuItem>
-                        <DropdownMenuItem>View Profile</DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive">
+                        <DropdownMenuItem onClick={() => handleChangeRole(member.id, member.name)}>
+                          Change Role
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleSendMessage(member.id, member.name)}>
+                          Send Message
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleViewProfile(member.id, member.name)}>
+                          View Profile
+                        </DropdownMenuItem>
+                        <DropdownMenuItem 
+                          className="text-destructive"
+                          onClick={() => handleRemoveMember(member.id, member.name)}
+                        >
                           Remove from Project
                         </DropdownMenuItem>
                       </DropdownMenuContent>

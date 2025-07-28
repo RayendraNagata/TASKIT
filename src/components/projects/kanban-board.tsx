@@ -522,7 +522,7 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
               Drag and drop tasks to update their status and priority
             </p>
           </div>
-          <Button>
+          <Button onClick={() => handleCreateTask("todo")}>
             <Plus className="mr-2 h-4 w-4" />
             Add Task
           </Button>

@@ -51,13 +51,36 @@ const projects = [
 export default function ProjectsPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [filteredProjects, setFilteredProjects] = useState(projects)
+  const [activeFilter, setActiveFilter] = useState("all")
 
   const handleSearch = (query: string) => {
     setSearchQuery(query)
-    const filtered = projects.filter(project =>
-      project.name.toLowerCase().includes(query.toLowerCase()) ||
-      project.description.toLowerCase().includes(query.toLowerCase())
-    )
+    applyFilters(query, activeFilter)
+  }
+
+  const handleFilterChange = (filter: string) => {
+    setActiveFilter(filter)
+    applyFilters(searchQuery, filter)
+  }
+
+  const applyFilters = (query: string, filter: string) => {
+    let filtered = projects
+
+    // Apply search filter
+    if (query) {
+      filtered = filtered.filter(project =>
+        project.name.toLowerCase().includes(query.toLowerCase()) ||
+        project.description.toLowerCase().includes(query.toLowerCase())
+      )
+    }
+
+    // Apply status filter
+    if (filter === "active") {
+      filtered = filtered.filter(project => project.status === "active")
+    } else if (filter === "completed") {
+      filtered = filtered.filter(project => project.status === "completed")
+    }
+
     setFilteredProjects(filtered)
   }
 
@@ -93,9 +116,27 @@ export default function ProjectsPage() {
           />
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm">All Projects</Button>
-          <Button variant="outline" size="sm">Active</Button>
-          <Button variant="outline" size="sm">Completed</Button>
+          <Button 
+            variant={activeFilter === "all" ? "default" : "outline"} 
+            size="sm"
+            onClick={() => handleFilterChange("all")}
+          >
+            All Projects
+          </Button>
+          <Button 
+            variant={activeFilter === "active" ? "default" : "outline"} 
+            size="sm"
+            onClick={() => handleFilterChange("active")}
+          >
+            Active
+          </Button>
+          <Button 
+            variant={activeFilter === "completed" ? "default" : "outline"} 
+            size="sm"
+            onClick={() => handleFilterChange("completed")}
+          >
+            Completed
+          </Button>
         </div>
       </div>
 

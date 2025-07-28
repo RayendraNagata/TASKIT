@@ -124,6 +124,12 @@ export default function Dashboard() {
     setProjects(prev => [projectWithStats, ...prev])
   }
 
+  // Handler for project actions
+  const handleProjectAction = (projectId: string, projectName: string) => {
+    console.log(`Action for project: ${projectName} (ID: ${projectId})`)
+    // TODO: Open project actions menu
+  }
+
   const totalProjects = projects.length
   const totalTasks = projects.reduce((sum, project) => sum + project.taskCount, 0)
   const completedTasks = projects.reduce((sum, project) => sum + project.completedTasks, 0)
@@ -242,7 +248,12 @@ export default function Dashboard() {
                           {project.description}
                         </CardDescription>
                       </div>
-                      <Button variant="ghost" size="sm" className="ml-2 flex-shrink-0">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="ml-2 flex-shrink-0"
+                        onClick={() => handleProjectAction(project.id, project.name)}
+                      >
                         <MoreHorizontal className="h-4 w-4" />
                       </Button>
                     </div>

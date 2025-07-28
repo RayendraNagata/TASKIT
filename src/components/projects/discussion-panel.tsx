@@ -16,6 +16,7 @@ import {
   AtSign
 } from "lucide-react"
 import { Textarea } from "@/components/ui/textarea"
+import { toast } from "sonner"
 
 interface Comment {
   id: string
@@ -108,6 +109,17 @@ export function DiscussionPanel({ projectId }: DiscussionPanelProps) {
 
     setComments(prev => [comment, ...prev])
     setNewComment("")
+    toast.success("Comment posted")
+  }
+
+  const handleReply = (commentId: string, authorName: string) => {
+    setReplyingTo(commentId)
+    toast.success(`Replying to ${authorName}`)
+  }
+
+  const handleLoadMore = () => {
+    toast.success("Loading more comments...")
+    // TODO: Load more comments from API
   }
 
   const formatTimeAgo = (date: Date) => {
@@ -255,7 +267,12 @@ export function DiscussionPanel({ projectId }: DiscussionPanelProps) {
                         className="text-sm"
                       />
                       <div className="flex items-center space-x-2">
-                        <Button size="sm">Reply</Button>
+                        <Button 
+                          size="sm"
+                          onClick={() => handleReply(comment.id, comment.author.name)}
+                        >
+                          Reply
+                        </Button>
                         <Button 
                           variant="ghost" 
                           size="sm"
@@ -306,7 +323,12 @@ export function DiscussionPanel({ projectId }: DiscussionPanelProps) {
 
       {/* Load More */}
       <div className="text-center">
-        <Button variant="outline">Load More Comments</Button>
+        <Button 
+          variant="outline"
+          onClick={handleLoadMore}
+        >
+          Load More Comments
+        </Button>
       </div>
     </div>
   )

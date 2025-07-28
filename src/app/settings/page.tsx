@@ -62,6 +62,28 @@ export default function UserSettingsPage() {
     })
   }
 
+  const handleChangePhoto = () => {
+    toast.success("Photo upload dialog will open")
+    // TODO: Open file picker for photo upload
+  }
+
+  const handleRemovePhoto = () => {
+    toast.success("Profile photo removed")
+    // TODO: Remove user profile photo
+  }
+
+  const handleExportData = () => {
+    toast.success("Data export started", {
+      description: "Your data will be downloaded shortly"
+    })
+    // TODO: Export user data
+  }
+
+  const handleDeleteAccount = () => {
+    toast.error("Account deletion requires confirmation")
+    // TODO: Show confirmation dialog for account deletion
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container py-6">
@@ -123,11 +145,20 @@ export default function UserSettingsPage() {
                     </AvatarFallback>
                   </Avatar>
                   <div className="space-y-2">
-                    <Button variant="outline" size="sm">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={handleChangePhoto}
+                    >
                       <Camera className="mr-2 h-4 w-4" />
                       Change Photo
                     </Button>
-                    <Button variant="ghost" size="sm" className="text-destructive">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="text-destructive"
+                      onClick={handleRemovePhoto}
+                    >
                       Remove Photo
                     </Button>
                   </div>
@@ -222,7 +253,7 @@ export default function UserSettingsPage() {
                     <div>
                       <p className="font-medium">Member since</p>
                       <p className="text-sm text-muted-foreground">
-                        {user?.createdAt?.toLocaleDateString() || "January 2025"}
+                        {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : "January 2025"}
                       </p>
                     </div>
                   </div>
@@ -383,7 +414,11 @@ export default function UserSettingsPage() {
                       Get a copy of all your data in TASKIT
                     </p>
                   </div>
-                  <Button variant="outline" size="sm">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={handleExportData}
+                  >
                     <Download className="mr-2 h-4 w-4" />
                     Export Data
                   </Button>
@@ -396,7 +431,11 @@ export default function UserSettingsPage() {
                       Permanently delete your account and all associated data
                     </p>
                   </div>
-                  <Button variant="destructive" size="sm">
+                  <Button 
+                    variant="destructive" 
+                    size="sm"
+                    onClick={handleDeleteAccount}
+                  >
                     <Trash2 className="mr-2 h-4 w-4" />
                     Delete Account
                   </Button>

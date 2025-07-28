@@ -204,7 +204,7 @@ export function TaskModal({
 
           {/* Assignee */}
           <div>
-            <label className="text-sm font-medium">Penanggung Jawab</label>
+            <label className="text-sm font-medium">Assignee</label>
             <Select value={formData.assigneeId} onValueChange={(value: string) => setFormData({ ...formData, assigneeId: value })}>
               <SelectTrigger className="mt-1">
                                             <SelectValue placeholder="Select priority" />
@@ -229,7 +229,7 @@ export function TaskModal({
 
           {/* Due Date */}
           <div>
-            <label className="text-sm font-medium">Tenggat Waktu</label>
+            <label className="text-sm font-medium">Due Date</label>
             <Input
               type="date"
               value={formData.dueDate}

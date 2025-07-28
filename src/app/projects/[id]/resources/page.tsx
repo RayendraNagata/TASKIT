@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
+import { toast } from "sonner"
 import { 
   Upload, 
   Link as LinkIcon, 
@@ -126,6 +127,9 @@ export default function ProjectResourcesPage({ params }: { params: { id: string 
       setLinks([newLink, ...links])
       setLinkForm({ title: "", url: "", description: "" })
       setIsAddingLink(false)
+      toast.success("Link added successfully!")
+    } else {
+      toast.error("Please fill in the required fields")
     }
   }
 
@@ -141,25 +145,45 @@ export default function ProjectResourcesPage({ params }: { params: { id: string 
         uploadedBy: { name: "Current User" }
       }
       setFiles([newFile, ...files])
+      toast.success(`File "${file.name}" uploaded successfully!`)
     }
+  }
+
+  const handleFileDelete = (fileId: string, fileName: string) => {
+    setFiles(files.filter(f => f.id !== fileId))
+    toast.success(`File "${fileName}" deleted successfully!`)
+  }
+
+  const handleLinkDelete = (linkId: string, linkTitle: string) => {
+    setLinks(links.filter(l => l.id !== linkId))
+    toast.success(`Link "${linkTitle}" deleted successfully!`)
+  }
+
+  const handleFileDownload = (file: ProjectFile) => {
+    toast.info(`Downloading "${file.name}"...`)
+  }
+
+  const handleLinkOpen = (link: ProjectLink) => {
+    window.open(link.url, '_blank')
+    toast.success(`Opened "${link.title}"`)
   }
 
   return (
     <div className="container py-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold">Sumber Daya Proyek</h1>
+        <h1 className="text-2xl font-bold">Project Resources</h1>
         <p className="text-muted-foreground">Manage important files and links for this project</p>
       </div>
 
       <Tabs defaultValue="files" className="space-y-6">
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="files">File</TabsTrigger>
-          <TabsTrigger value="links">Link</TabsTrigger>
+          <TabsTrigger value="files">Files</TabsTrigger>
+          <TabsTrigger value="links">Links</TabsTrigger>
         </TabsList>
 
         <TabsContent value="files" className="space-y-4">
           <div className="flex justify-between items-center">
-            <h2 className="text-lg font-semibold">File Proyek</h2>
+            <h2 className="text-lg font-semibold">Project Files</h2>
             <div>
               <input
                 type="file"
@@ -188,15 +212,24 @@ export default function ProjectResourcesPage({ params }: { params: { id: string 
                       <div>
                         <h3 className="font-medium">{file.name}</h3>
                         <p className="text-sm text-muted-foreground">
-                          {formatFileSize(file.size)} • Diupload oleh {file.uploadedBy.name} • {file.uploadedAt}
+                          {formatFileSize(file.size)} • Uploaded by {file.uploadedBy.name} • {file.uploadedAt}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <Button variant="ghost" size="sm">
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => handleFileDownload(file)}
+                      >
                         <Download className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="sm" className="text-destructive">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="text-destructive"
+                        onClick={() => handleFileDelete(file.id, file.name)}
+                      >
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
@@ -226,7 +259,7 @@ export default function ProjectResourcesPage({ params }: { params: { id: string 
 
         <TabsContent value="links" className="space-y-4">
           <div className="flex justify-between items-center">
-            <h2 className="text-lg font-semibold">Link Penting</h2>
+            <h2 className="text-lg font-semibold">Important Links</h2>
             <Dialog open={isAddingLink} onOpenChange={setIsAddingLink}>
               <DialogTrigger asChild>
                 <Button>
@@ -259,7 +292,7 @@ export default function ProjectResourcesPage({ params }: { params: { id: string 
                     />
                   </div>
                   <div>
-                    <label className="text-sm font-medium">Deskripsi (Opsional)</label>
+                    <label className="text-sm font-medium">Description (Optional)</label>
                     <Textarea
                       value={linkForm.description}
                       onChange={(e) => setLinkForm({ ...linkForm, description: e.target.value })}
@@ -270,10 +303,10 @@ export default function ProjectResourcesPage({ params }: { params: { id: string 
                 </div>
                 <DialogFooter>
                   <Button variant="outline" onClick={() => setIsAddingLink(false)}>
-                    Batal
+                    Cancel
                   </Button>
                   <Button onClick={handleAddLink}>
-                    Tambah Link
+                    Add Link
                   </Button>
                 </DialogFooter>
               </DialogContent>
@@ -300,12 +333,19 @@ export default function ProjectResourcesPage({ params }: { params: { id: string 
                       </p>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <Button variant="ghost" size="sm" asChild>
-                        <a href={link.url} target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="h-4 w-4" />
-                        </a>
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => handleLinkOpen(link)}
+                      >
+                        <ExternalLink className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="sm" className="text-destructive">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="text-destructive"
+                        onClick={() => handleLinkDelete(link.id, link.title)}
+                      >
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
