@@ -23,6 +23,21 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { toast } from "sonner"
 
 interface Member {
@@ -106,26 +121,86 @@ export function MembersPanel({ projectId }: MembersPanelProps) {
   ])
 
   const [searchQuery, setSearchQuery] = useState("")
+  const [showInviteDialog, setShowInviteDialog] = useState(false)
+  const [showRoleDialog, setShowRoleDialog] = useState(false)
+  const [showChangeRoleDialog, setShowChangeRoleDialog] = useState(false)
+  const [selectedMember, setSelectedMember] = useState<Member | null>(null)
+  const [inviteForm, setInviteForm] = useState({
+    email: "",
+    role: "member" as "admin" | "member",
+    message: ""
+  })
 
   // Handler functions for member actions
   const handleInviteMember = () => {
-    toast.success("Invite member dialog will open")
-    // TODO: Open invite member dialog
+    setShowInviteDialog(true)
+  }
+
+  const handleSendInvite = () => {
+    if (inviteForm.email) {
+      const newMember: Member = {
+        id: Date.now().toString(),
+        name: inviteForm.email.split('@')[0],
+        email: inviteForm.email,
+        role: {
+          id: inviteForm.role,
+          name: inviteForm.role === "admin" ? "Administrator" : "Team Member",
+          type: inviteForm.role,
+          permissions: inviteForm.role === "admin" ? 
+            ["view_project", "manage_tasks", "manage_files", "manage_members"] :
+            ["view_project", "manage_tasks"]
+        },
+        joinedAt: new Date(),
+        lastActive: new Date(),
+        status: "offline"
+      }
+      setMembers([...members, newMember])
+      setInviteForm({ email: "", role: "member", message: "" })
+      setShowInviteDialog(false)
+      toast.success(`Invitation sent to ${inviteForm.email}`)
+    } else {
+      toast.error("Please enter an email address")
+    }
   }
 
   const handleManageRoles = () => {
-    toast.success("Role management dialog will open")
-    // TODO: Open role management dialog
+    setShowRoleDialog(true)
   }
 
   const handleChangeRole = (memberId: string, memberName: string) => {
-    toast.success(`Change role for ${memberName}`)
-    // TODO: Open change role dialog
+    const member = members.find(m => m.id === memberId)
+    if (member) {
+      setSelectedMember(member)
+      setShowChangeRoleDialog(true)
+    }
+  }
+
+  const handleUpdateRole = (newRole: "admin" | "member") => {
+    if (selectedMember) {
+      setMembers(members.map(m => 
+        m.id === selectedMember.id 
+          ? {
+              ...m,
+              role: {
+                ...m.role,
+                type: newRole,
+                name: newRole === "admin" ? "Administrator" : "Team Member",
+                permissions: newRole === "admin" ? 
+                  ["view_project", "manage_tasks", "manage_files", "manage_members"] :
+                  ["view_project", "manage_tasks"]
+              }
+            }
+          : m
+      ))
+      setShowChangeRoleDialog(false)
+      setSelectedMember(null)
+      toast.success(`Role updated for ${selectedMember.name}`)
+    }
   }
 
   const handleSendMessage = (memberId: string, memberName: string) => {
     toast.success(`Opening message dialog for ${memberName}`)
-    // TODO: Open messaging interface
+    // TODO: Implement messaging system
   }
 
   const handleViewProfile = (memberId: string, memberName: string) => {
@@ -134,8 +209,8 @@ export function MembersPanel({ projectId }: MembersPanelProps) {
   }
 
   const handleRemoveMember = (memberId: string, memberName: string) => {
-    toast.error(`Remove ${memberName} from project?`)
-    // TODO: Show confirmation dialog and remove member
+    setMembers(members.filter(m => m.id !== memberId))
+    toast.success(`${memberName} removed from project`)
   }
 
   const getRoleIcon = (roleType: Member["role"]["type"]) => {
@@ -366,6 +441,157 @@ export function MembersPanel({ projectId }: MembersPanelProps) {
           </div>
         </CardContent>
       </Card>
+
+      {/* Invite Member Dialog */}
+      <Dialog open={showInviteDialog} onOpenChange={setShowInviteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Invite Team Member</DialogTitle>
+            <DialogDescription>
+              Invite a new member to join this project
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <label className="text-sm font-medium">Email Address</label>
+              <Input
+                value={inviteForm.email}
+                onChange={(e) => setInviteForm({ ...inviteForm, email: e.target.value })}
+                placeholder="colleague@company.com"
+                type="email"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Role</label>
+              <Select value={inviteForm.role} onValueChange={(value: "admin" | "member") => setInviteForm({ ...inviteForm, role: value })}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="member">
+                    <div className="flex items-center space-x-2">
+                      <User className="h-4 w-4" />
+                      <span>Member</span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="admin">
+                    <div className="flex items-center space-x-2">
+                      <Shield className="h-4 w-4" />
+                      <span>Admin</span>
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="text-sm font-medium">Personal Message (Optional)</label>
+              <Input
+                value={inviteForm.message}
+                onChange={(e) => setInviteForm({ ...inviteForm, message: e.target.value })}
+                placeholder="Welcome to our team!"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowInviteDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleSendInvite}>
+              Send Invitation
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Role Management Dialog */}
+      <Dialog open={showRoleDialog} onOpenChange={setShowRoleDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Manage Roles & Permissions</DialogTitle>
+            <DialogDescription>
+              Configure roles and permissions for this project
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between p-3 border rounded-lg">
+                <div className="flex items-center space-x-3">
+                  <Crown className="h-5 w-5 text-yellow-600" />
+                  <div>
+                    <h4 className="font-medium">Project Owner</h4>
+                    <p className="text-sm text-muted-foreground">Full control over project</p>
+                  </div>
+                </div>
+                <Badge variant="outline">1 member</Badge>
+              </div>
+              
+              <div className="flex items-center justify-between p-3 border rounded-lg">
+                <div className="flex items-center space-x-3">
+                  <Shield className="h-5 w-5 text-blue-600" />
+                  <div>
+                    <h4 className="font-medium">Administrator</h4>
+                    <p className="text-sm text-muted-foreground">Manage tasks, files, and members</p>
+                  </div>
+                </div>
+                <Badge variant="outline">{members.filter(m => m.role.type === "admin").length} members</Badge>
+              </div>
+              
+              <div className="flex items-center justify-between p-3 border rounded-lg">
+                <div className="flex items-center space-x-3">
+                  <User className="h-5 w-5 text-gray-600" />
+                  <div>
+                    <h4 className="font-medium">Member</h4>
+                    <p className="text-sm text-muted-foreground">View and contribute to tasks</p>
+                  </div>
+                </div>
+                <Badge variant="outline">{members.filter(m => m.role.type === "member").length} members</Badge>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button onClick={() => setShowRoleDialog(false)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Change Role Dialog */}
+      <Dialog open={showChangeRoleDialog} onOpenChange={setShowChangeRoleDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Change Member Role</DialogTitle>
+            <DialogDescription>
+              Update role for {selectedMember?.name}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-3">
+              <Button
+                variant={selectedMember?.role.type === "admin" ? "default" : "outline"}
+                onClick={() => handleUpdateRole("admin")}
+                className="w-full justify-start"
+              >
+                <Shield className="mr-2 h-4 w-4" />
+                Administrator
+              </Button>
+              <Button
+                variant={selectedMember?.role.type === "member" ? "default" : "outline"}
+                onClick={() => handleUpdateRole("member")}
+                className="w-full justify-start"
+              >
+                <User className="mr-2 h-4 w-4" />
+                Member
+              </Button>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowChangeRoleDialog(false)}>
+              Cancel
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

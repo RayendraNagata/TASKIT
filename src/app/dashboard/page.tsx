@@ -5,6 +5,22 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { CreateProjectModal } from "@/components/projects/create-project-modal"
 import { useAuth } from "@/components/providers/auth-provider"
 import { 
@@ -19,7 +35,10 @@ import {
   TrendingUp,
   MessageSquare,
   FileText,
-  Link2
+  Link2,
+  Edit,
+  Trash2,
+  Settings as SettingsIcon
 } from "lucide-react"
 
 interface Project {
@@ -124,10 +143,56 @@ export default function Dashboard() {
     setProjects(prev => [projectWithStats, ...prev])
   }
 
+  // Project actions dialog state
+  const [showProjectActions, setShowProjectActions] = useState(false)
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+  const [showEditDialog, setShowEditDialog] = useState(false)
+  const [editForm, setEditForm] = useState({ name: "", description: "" })
+
   // Handler for project actions
   const handleProjectAction = (projectId: string, projectName: string) => {
-    console.log(`Action for project: ${projectName} (ID: ${projectId})`)
-    // TODO: Open project actions menu
+    const project = projects.find(p => p.id === projectId)
+    if (project) {
+      setSelectedProject(project)
+      setShowProjectActions(true)
+    }
+  }
+
+  const handleEditProject = () => {
+    if (selectedProject) {
+      setEditForm({
+        name: selectedProject.name,
+        description: selectedProject.description
+      })
+      setShowEditDialog(true)
+      setShowProjectActions(false)
+    }
+  }
+
+  const handleDeleteProject = () => {
+    setShowDeleteDialog(true)
+    setShowProjectActions(false)
+  }
+
+  const confirmDeleteProject = () => {
+    if (selectedProject) {
+      setProjects(prev => prev.filter(p => p.id !== selectedProject.id))
+      setShowDeleteDialog(false)
+      setSelectedProject(null)
+    }
+  }
+
+  const saveEditProject = () => {
+    if (selectedProject && editForm.name.trim()) {
+      setProjects(prev => prev.map(p => 
+        p.id === selectedProject.id 
+          ? { ...p, name: editForm.name, description: editForm.description }
+          : p
+      ))
+      setShowEditDialog(false)
+      setSelectedProject(null)
+    }
   }
 
   const totalProjects = projects.length
@@ -248,14 +313,48 @@ export default function Dashboard() {
                           {project.description}
                         </CardDescription>
                       </div>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="ml-2 flex-shrink-0"
-                        onClick={() => handleProjectAction(project.id, project.name)}
-                      >
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
+                      
+                      {project.isOwner && (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="ml-2 flex-shrink-0"
+                            >
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                              onClick={() => {
+                                setSelectedProject(project)
+                                handleEditProject()
+                              }}
+                            >
+                              <Edit className="mr-2 h-4 w-4" />
+                              Edit Project
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => window.open(`/projects/${project.id}/settings`, '_blank')}
+                            >
+                              <SettingsIcon className="mr-2 h-4 w-4" />
+                              Project Settings
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              onClick={() => {
+                                setSelectedProject(project)
+                                handleDeleteProject()
+                              }}
+                              className="text-destructive"
+                            >
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              Delete Project
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
                     </div>
                     
                     {/* Progress Bar */}
@@ -353,6 +452,83 @@ export default function Dashboard() {
           )}
         </div>
       </div>
+
+      {/* Edit Project Dialog */}
+      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Edit Project</DialogTitle>
+            <DialogDescription>
+              Update your project details here.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <label htmlFor="edit-name" className="text-sm font-medium">
+                Project Name
+              </label>
+              <Input
+                id="edit-name"
+                value={editForm.name}
+                onChange={(e) => setEditForm(prev => ({ ...prev, name: e.target.value }))}
+                placeholder="Enter project name"
+              />
+            </div>
+            <div className="grid gap-2">
+              <label htmlFor="edit-description" className="text-sm font-medium">
+                Description
+              </label>
+              <textarea
+                id="edit-description"
+                value={editForm.description}
+                onChange={(e) => setEditForm(prev => ({ ...prev, description: e.target.value }))}
+                placeholder="Describe what this project is about"
+                className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={() => setShowEditDialog(false)}
+            >
+              Cancel
+            </Button>
+            <Button onClick={saveEditProject}>
+              Save Changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Project Dialog */}
+      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Delete Project</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete "{selectedProject?.name}"? This action cannot be undone.
+              All tasks, discussions, files, and links will be permanently removed.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={() => setShowDeleteDialog(false)}
+            >
+              Cancel
+            </Button>
+            <Button 
+              variant="destructive"
+              onClick={confirmDeleteProject}
+            >
+              Delete Project
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

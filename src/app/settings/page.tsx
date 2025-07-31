@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -10,6 +10,14 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { 
   User, 
   Settings, 
@@ -47,12 +55,17 @@ export default function UserSettingsPage() {
   const [profile, setProfile] = useState({
     name: user?.name || "",
     email: user?.email || "",
+    avatar: "",
     bio: "",
     location: "",
     phone: "",
     website: "",
     timezone: "UTC-8"
   })
+
+  const [showPhotoDialog, setShowPhotoDialog] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleSave = () => {
     // Simulate save
@@ -63,13 +76,52 @@ export default function UserSettingsPage() {
   }
 
   const handleChangePhoto = () => {
-    toast.success("Photo upload dialog will open")
-    // TODO: Open file picker for photo upload
+    setShowPhotoDialog(true)
+  }
+
+  const handleFileSelect = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast.error("Please select an image file")
+      return
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image size must be less than 5MB")
+      return
+    }
+
+    setUploading(true)
+    
+    try {
+      // Simulate upload process
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      
+      // Create object URL for preview
+      const imageUrl = URL.createObjectURL(file)
+      setProfile(prev => ({ ...prev, avatar: imageUrl }))
+      
+      toast.success("Profile photo updated successfully!")
+      setShowPhotoDialog(false)
+    } catch (error) {
+      toast.error("Failed to upload photo")
+    } finally {
+      setUploading(false)
+    }
   }
 
   const handleRemovePhoto = () => {
+    setProfile(prev => ({ ...prev, avatar: "" }))
     toast.success("Profile photo removed")
-    // TODO: Remove user profile photo
+    setShowPhotoDialog(false)
   }
 
   const handleExportData = () => {
@@ -514,6 +566,78 @@ export default function UserSettingsPage() {
             </Card>
           </TabsContent>
         </Tabs>
+        
+        {/* Photo Upload Dialog */}
+        <Dialog open={showPhotoDialog} onOpenChange={setShowPhotoDialog}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Update Profile Photo</DialogTitle>
+              <DialogDescription>
+                Upload a new profile photo or remove the current one.
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="grid gap-4 py-4">
+              <div className="flex flex-col items-center gap-4">
+                <Avatar className="h-24 w-24">
+                  <AvatarImage src={profile.avatar} />
+                  <AvatarFallback className="text-lg">
+                    {profile.name.split(' ').map(n => n[0]).join('')}
+                  </AvatarFallback>
+                </Avatar>
+                
+                <div className="flex gap-2">
+                  <Button
+                    onClick={handleFileSelect}
+                    disabled={uploading}
+                    className="flex-1"
+                  >
+                    {uploading ? (
+                      <>
+                        <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                        Uploading...
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="mr-2 h-4 w-4" />
+                        Upload New Photo
+                      </>
+                    )}
+                  </Button>
+                  
+                  {profile.avatar && (
+                    <Button
+                      variant="outline"
+                      onClick={handleRemovePhoto}
+                      disabled={uploading}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+                
+                <p className="text-xs text-muted-foreground text-center">
+                  JPG, PNG or GIF. Max size 5MB.
+                </p>
+              </div>
+            </div>
+            
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowPhotoDialog(false)}>
+                Cancel
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+        
+        {/* Hidden File Input */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          className="hidden"
+        />
       </div>
     </div>
   )

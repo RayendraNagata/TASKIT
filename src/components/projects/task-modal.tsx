@@ -207,7 +207,7 @@ export function TaskModal({
             <label className="text-sm font-medium">Assignee</label>
             <Select value={formData.assigneeId} onValueChange={(value: string) => setFormData({ ...formData, assigneeId: value })}>
               <SelectTrigger className="mt-1">
-                                            <SelectValue placeholder="Select priority" />
+                <SelectValue placeholder="Select team member" />
               </SelectTrigger>
               <SelectContent>
                 {teamMembers.map((member) => (
